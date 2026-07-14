@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testing Demos</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      min-height: 100vh;
+      padding: 32px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    li a {
+      display: block;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: #292f3c;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    li a:hover {
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Demos</h1>
+    <ul>
+      <li><a href="/testing/edge-to-edge-demo/">Edge to Edge Demo</a></li>
+      <li><a href="/testing/viewport-fit-auto-scroll/">Viewport Fit Auto Scroll</a></li>
+      <li><a href="/testing/viewport-fit-cover/">Viewport Fit Cover</a></li>
+      <li><a href="/testing/viewport-fit-cover-header/">Viewport Fit Cover Header</a></li>
+      <li><a href="/testing/viewport-fit-cover-scroll/">Viewport Fit Cover Scroll</a></li>
+    </ul>
+  </div>
+</body>
+
+</html>
