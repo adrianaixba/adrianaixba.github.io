@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- Dynamic Meta Viewport Tag -->
+  <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Edge to Edge Viewport Demo</title>
+  <style>
+    :root {
+      --indirect-safe-top: env(safe-area-inset-top, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: white;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Highlighted Pink Top Header Box */
+    #top-header {
+      width: 100%;
+      background: #fce7f3;
+      border-bottom: 1px dashed #f472b6;
+      z-index: 1000;
+      display: none;
+      transition: padding-top 0.2s ease;
+    }
+
+    #top-header.header-visible {
+      display: block;
+    }
+
+    #top-header.pos-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    #top-header.pos-sticky {
+      position: sticky;
+      top: 0;
+    }
+
+    .header-content {
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #db2777;
+      text-transform: uppercase;
+    }
+
+    /* Fast vs Slow Safe Area Paths */
+    #top-header.path-fast {
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    #top-header.path-slow {
+      padding-top: calc(var(--indirect-safe-top) + 0px);
+    }
+
+    /* Main Content Container */
+    .main-container {
+      flex: 1;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .hero-section {
+      margin-top: 8px;
+    }
+
+    .hero-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    /* Cards */
+    .card {
+      background: #efefef;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    .placeholder-bar {
+      height: 12px;
+      background: #a9c0df;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .placeholder-bar.short {
+      width: 55%;
+    }
+
+    .placeholder-bar.medium {
+      width: 80%;
+    }
+
+    .placeholder-bar.full {
+      width: 100%;
+    }
+
+    /* Controls Panel */
+    .controls-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 14px;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    select {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .debug-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    /* Highlighted Pink Bottom Footer Box */
+    #bottom-footer {
+      width: 100%;
+      background: #fce7f3;
+      border-top: 1px dashed #f472b6;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      margin-top: auto;
+    }
+
+    .footer-content {
+      padding: 14px 16px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #db2777;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="top-header" class="header-visible pos-fixed path-fast">
+    <div class="header-content">
+      HEADER CONTENT
+    </div>
+  </header>
+
+  <main class="main-container" id="main-content">
+    <div style="height: 48px;" id="header-spacer"></div>
+
+    <section class="hero-section">
+      <h1 class="hero-title">Edge to edge demo</h1>
+      <p class="hero-subtitle">
+        Edge to edge demo.
+      </p>
+    </section>
+
+    <!-- Placeholder Card 1 -->
+    <div class="card">
+      <div class="placeholder-bar medium"></div>
+      <div class="placeholder-bar short"></div>
+      <div class="placeholder-bar full"></div>
+    </div>
+
+    <!-- Placeholder Card 2 -->
+    <div class="card">
+      <div class="placeholder-bar medium"></div>
+      <div class="placeholder-bar short"></div>
+      <div class="placeholder-bar full"></div>
+    </div>
+
+    <!-- Demo Controls Card -->
+    <div class="card">
+      <h2 class="controls-title">Controls</h2>
+
+      <div class="control-grid">
+        <div class="control-group">
+          <label for="viewport-fit-select">Viewport-fit value</label>
+          <select id="viewport-fit-select">
+            <option value="cover" selected>cover</option>
+            <option value="auto">auto</option>
+            <option value="contain">contain</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="header-anchor-select">Top header position</label>
+          <select id="header-anchor-select">
+            <option value="fixed" selected>fixed</option>
+            <option value="sticky">sticky</option>
+            <option value="none">none</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="safe-area-path-select">Safe area inset path use</label>
+          <select id="safe-area-path-select">
+            <option value="fast" selected>Fast path (env)</option>
+            <option value="slow-css">Slow path A (CSS var)</option>
+            <option value="slow-js">Slow path B (JS layout)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <label>Status Inspector</label>
+        <div class="debug-box" id="debug-readout">
+          <div>Meta tag: <span id="meta-tag-output" class="highlight"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholder Card 3 -->
+    <div class="card">
+      <div class="placeholder-bar medium"></div>
+      <div class="placeholder-bar short"></div>
+      <div class="placeholder-bar full"></div>
+    </div>
+  </main>
+
+  <footer id="bottom-footer">
+    <div class="footer-content">
+      FOOTER CONTENT
+    </div>
+  </footer>
+
+  <script>
+    const viewportMeta = document.getElementById('viewport-meta');
+    const topHeader = document.getElementById('top-header');
+    const headerSpacer = document.getElementById('header-spacer');
+
+    const viewportFitSelect = document.getElementById('viewport-fit-select');
+    const headerAnchorSelect = document.getElementById('header-anchor-select');
+    const safeAreaPathSelect = document.getElementById('safe-area-path-select');
+
+    const metaTagOutput = document.getElementById('meta-tag-output');
+
+    let jsLayoutInterval = null;
+
+    function updateState() {
+      const viewportFitVal = viewportFitSelect.value;
+      const headerAnchorVal = headerAnchorSelect.value;
+      const safeAreaPathVal = safeAreaPathSelect.value;
+
+      viewportMeta.setAttribute('content', `width=device-width, initial-scale=1.0, viewport-fit=${viewportFitVal}`);
+      metaTagOutput.textContent = `<meta name="viewport" content="${viewportMeta.getAttribute('content')}">`;
+
+      topHeader.className = '';
+      if (headerAnchorVal === 'none') {
+        topHeader.classList.remove('header-visible');
+        headerSpacer.style.display = 'none';
+      } else {
+        topHeader.classList.add('header-visible');
+        headerSpacer.style.display = 'block';
+        if (headerAnchorVal === 'fixed') topHeader.classList.add('pos-fixed');
+        else if (headerAnchorVal === 'sticky') topHeader.classList.add('pos-sticky');
+      }
+
+      if (jsLayoutInterval) {
+        clearInterval(jsLayoutInterval);
+        jsLayoutInterval = null;
+        topHeader.style.paddingTop = '';
+      }
+
+      topHeader.classList.remove('path-fast', 'path-slow');
+
+      if (safeAreaPathVal === 'fast') {
+        topHeader.classList.add('path-fast');
+      } else if (safeAreaPathVal === 'slow-css') {
+        topHeader.classList.add('path-slow');
+      } else if (safeAreaPathVal === 'slow-js') {
+        const runJSPath = () => {
+          topHeader.style.paddingTop = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)') || '0px';
+        };
+        runJSPath();
+        jsLayoutInterval = setInterval(runJSPath, 500);
+      }
+
+      setTimeout(() => {
+        headerPaddingOutput.textContent = window.getComputedStyle(topHeader).paddingTop || '0px';
+      }, 50);
+    }
+
+    viewportFitSelect.addEventListener('change', updateState);
+    headerAnchorSelect.addEventListener('change', updateState);
+    safeAreaPathSelect.addEventListener('change', updateState);
+
+    updateState();
+  </script>
+</body>
+
+</html>
