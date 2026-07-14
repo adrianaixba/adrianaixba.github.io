@@ -174,6 +174,18 @@
       line-height: 1.6;
     }
 
+    .code-snippet {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.8rem;
+      color: #0f172a;
+      white-space: pre-wrap;
+      margin-top: 6px;
+    }
+
     .highlight {
       color: #2563eb;
       font-weight: 600;
@@ -269,6 +281,12 @@
         <label>Status Inspector</label>
         <div class="debug-box" id="debug-readout">
           <div>Meta tag: <span id="meta-tag-output" class="highlight"></span></div>
+          <div>Active path: <span id="path-mode-output" class="highlight"></span></div>
+          <div>Header top padding: <span id="header-padding-output" class="highlight"></span></div>
+        </div>
+        <div style="margin-top: 12px;">
+          <label>Implementation:</label>
+          <div class="code-snippet" id="code-snippet-output"></div>
         </div>
       </div>
     </div>
@@ -287,14 +305,12 @@
       <div class="placeholder-bar full"></div>
     </div>
 
-
     <!-- Placeholder Card 5 -->
     <div class="card">
       <div class="placeholder-bar medium"></div>
       <div class="placeholder-bar short"></div>
       <div class="placeholder-bar full"></div>
     </div>
-
 
     <!-- Placeholder Card 6 -->
     <div class="card">
@@ -303,14 +319,12 @@
       <div class="placeholder-bar full"></div>
     </div>
 
-
     <!-- Placeholder Card 7 -->
     <div class="card">
       <div class="placeholder-bar medium"></div>
       <div class="placeholder-bar short"></div>
       <div class="placeholder-bar full"></div>
     </div>
-
 
     <!-- Placeholder Card 8 -->
     <div class="card">
@@ -319,14 +333,12 @@
       <div class="placeholder-bar full"></div>
     </div>
 
-
     <!-- Placeholder Card 9 -->
     <div class="card">
       <div class="placeholder-bar medium"></div>
       <div class="placeholder-bar short"></div>
       <div class="placeholder-bar full"></div>
     </div>
-
 
     <!-- Placeholder Card 10 -->
     <div class="card">
@@ -352,8 +364,23 @@
     const safeAreaPathSelect = document.getElementById('safe-area-path-select');
 
     const metaTagOutput = document.getElementById('meta-tag-output');
+    const pathModeOutput = document.getElementById('path-mode-output');
+    const headerPaddingOutput = document.getElementById('header-padding-output');
+    const codeSnippetOutput = document.getElementById('code-snippet-output');
 
     let jsLayoutInterval = null;
+
+    const codeSnippets = {
+      'fast': `/* Fast Path: Direct Evaluation */\n#top-header {\n  padding-top: env(safe-area-inset-top, 0px);\n}`,
+      'slow-css': `/* Slow Path A: Custom CSS Variable + calc() */\n:root {\n  --indirect-safe-top: env(safe-area-inset-top, 0px);\n}\n#top-header {\n  padding-top: calc(var(--indirect-safe-top) + 0px);\n}`,
+      'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateInset() {\n  topHeader.style.paddingTop = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-top)');\n}`
+    };
+
+    const pathModeDescriptions = {
+      'fast': 'Fast Path (Direct Engine Inset Binding)',
+      'slow-css': 'Slow Path A (CSS Custom Property + calc() Cascade)',
+      'slow-js': 'Slow Path B (JS Dynamic Reflow Sync)'
+    };
 
     function updateState() {
       const viewportFitVal = viewportFitSelect.value;
@@ -393,6 +420,14 @@
         runJSPath();
         jsLayoutInterval = setInterval(runJSPath, 500);
       }
+
+      pathModeOutput.textContent = pathModeDescriptions[safeAreaPathVal];
+      codeSnippetOutput.textContent = codeSnippets[safeAreaPathVal];
+
+      // Delay reading computed style to allow style recalculation & viewport meta changes to take effect
+      setTimeout(() => {
+        headerPaddingOutput.textContent = window.getComputedStyle(topHeader).paddingTop || '0px';
+      }, 50);
     }
 
     viewportFitSelect.addEventListener('change', updateState);
