@@ -9,6 +9,7 @@
   <style>
     :root {
       --indirect-safe-top: env(safe-area-inset-top, 0px);
+      --indirect-safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * {
@@ -61,13 +62,58 @@
       text-transform: uppercase;
     }
 
-    /* Fast vs Slow Safe Area Paths */
+    /* Top Safe Area Paths */
     #top-header.path-fast {
       padding-top: env(safe-area-inset-top, 0px);
     }
 
     #top-header.path-slow {
       padding-top: calc(var(--indirect-safe-top) + 0px);
+    }
+
+    /* Highlighted Pink Bottom Footer Box */
+    #bottom-footer {
+      width: 100%;
+      background: #fce7f3;
+      border-top: 1px dashed #f472b6;
+      z-index: 1000;
+      display: none;
+      transition: padding-bottom 0.2s ease;
+      margin-top: auto;
+    }
+
+    #bottom-footer.footer-visible {
+      display: block;
+    }
+
+    #bottom-footer.pos-fixed {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
+
+    #bottom-footer.pos-sticky {
+      position: sticky;
+      bottom: 0;
+    }
+
+    /* Bottom Safe Area Paths */
+    #bottom-footer.path-fast {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    #bottom-footer.path-slow {
+      padding-bottom: calc(var(--indirect-safe-bottom) + 0px);
+    }
+
+    .footer-content {
+      padding: 14px 16px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #db2777;
+      text-transform: uppercase;
     }
 
     /* Main Content Container */
@@ -190,25 +236,6 @@
       color: #2563eb;
       font-weight: 600;
     }
-
-    /* Highlighted Pink Bottom Footer Box */
-    #bottom-footer {
-      width: 100%;
-      background: #fce7f3;
-      border-top: 1px dashed #f472b6;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      margin-top: auto;
-    }
-
-    .footer-content {
-      padding: 14px 16px;
-      text-align: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: #db2777;
-      text-transform: uppercase;
-    }
   </style>
 </head>
 
@@ -230,6 +257,97 @@
       </p>
     </section>
 
+    <!-- SECTION 1: Viewport Controls Card -->
+    <div class="card">
+      <h2 class="controls-title">1. Viewport controls</h2>
+      <div class="control-group">
+        <label for="viewport-fit-select">Viewport-fit value</label>
+        <select id="viewport-fit-select">
+          <option value="cover" selected>cover</option>
+          <option value="auto">auto</option>
+          <option value="contain">contain</option>
+        </select>
+      </div>
+      <div style="margin-top: 14px;">
+        <label>Status Inspector (Viewport)</label>
+        <div class="debug-box">
+          <div>Meta tag: <span id="meta-tag-output" class="highlight"></span></div>
+        </div>
+      </div>
+      </div>
+
+    <!-- SECTION 2: Top Header Controls Card -->
+    <div class="card">
+      <h2 class="controls-title">2. Top header controls</h2>
+      <div class="control-grid">
+        <div class="control-group">
+          <label for="header-anchor-select">Top header position</label>
+          <select id="header-anchor-select">
+            <option value="fixed" selected>fixed</option>
+            <option value="sticky">sticky</option>
+            <option value="none">none</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="safe-area-path-select-top">Safe area inset path</label>
+          <select id="safe-area-path-select-top">
+            <option value="fast" selected>Fast path (env)</option>
+            <option value="slow-css">Slow path A (CSS var)</option>
+            <option value="slow-js">Slow path B (JS layout)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <label>Status Inspector (Top)</label>
+        <div class="debug-box">
+          <div>Active path: <span id="path-mode-output-top" class="highlight"></span></div>
+          <div>Header top padding: <span id="header-padding-output-top" class="highlight"></span></div>
+        </div>
+        <div style="margin-top: 12px;">
+          <label>Implementation details (Top)</label>
+          <div class="code-snippet" id="code-snippet-output-top"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Bottom Header Controls Card -->
+    <div class="card">
+      <h2 class="controls-title">3. Bottom header controls</h2>
+      <div class="control-grid">
+        <div class="control-group">
+          <label for="footer-anchor-select">Bottom header position</label>
+          <select id="footer-anchor-select">
+            <option value="fixed" selected>fixed</option>
+            <option value="sticky">sticky</option>
+            <option value="none">none</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="safe-area-path-select-bottom">Safe area inset path</label>
+          <select id="safe-area-path-select-bottom">
+            <option value="fast" selected>Fast path (env)</option>
+            <option value="slow-css">Slow path A (CSS var)</option>
+            <option value="slow-js">Slow path B (JS layout)</option>
+          </select>
+        </div>
+        </div>
+        
+        <div style="margin-top: 16px;">
+          <label>Status Inspector (Bottom)</label>
+          <div class="debug-box">
+            <div>Active path: <span id="path-mode-output-bottom" class="highlight"></span></div>
+            <div>Footer bottom padding: <span id="footer-padding-output-bottom" class="highlight"></span></div>
+          </div>
+          <div style="margin-top: 12px;">
+            <label>Implementation details (Bottom)</label>
+            <div class="code-snippet" id="code-snippet-output-bottom"></div>
+          </div>
+        </div>
+    </div>
+
     <!-- Placeholder Card 1 -->
     <div class="card">
       <div class="placeholder-bar medium"></div>
@@ -242,53 +360,6 @@
       <div class="placeholder-bar medium"></div>
       <div class="placeholder-bar short"></div>
       <div class="placeholder-bar full"></div>
-    </div>
-
-    <!-- Demo Controls Card -->
-    <div class="card">
-      <h2 class="controls-title">Controls</h2>
-
-      <div class="control-grid">
-        <div class="control-group">
-          <label for="viewport-fit-select">Viewport-fit value</label>
-          <select id="viewport-fit-select">
-            <option value="cover" selected>cover</option>
-            <option value="auto">auto</option>
-            <option value="contain">contain</option>
-          </select>
-        </div>
-
-        <div class="control-group">
-          <label for="header-anchor-select">Top header position</label>
-          <select id="header-anchor-select">
-            <option value="fixed" selected>fixed</option>
-            <option value="sticky">sticky</option>
-            <option value="none">none</option>
-          </select>
-        </div>
-
-        <div class="control-group">
-          <label for="safe-area-path-select">Safe area inset path use</label>
-          <select id="safe-area-path-select">
-            <option value="fast" selected>Fast path (env)</option>
-            <option value="slow-css">Slow path A (CSS var)</option>
-            <option value="slow-js">Slow path B (JS layout)</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="margin-top: 16px;">
-        <label>Status Inspector</label>
-        <div class="debug-box" id="debug-readout">
-          <div>Meta tag: <span id="meta-tag-output" class="highlight"></span></div>
-          <div>Active path: <span id="path-mode-output" class="highlight"></span></div>
-          <div>Header top padding: <span id="header-padding-output" class="highlight"></span></div>
-        </div>
-        <div style="margin-top: 12px;">
-          <label>Implementation:</label>
-          <div class="code-snippet" id="code-snippet-output"></div>
-        </div>
-      </div>
     </div>
 
     <!-- Placeholder Card 3 -->
@@ -318,62 +389,54 @@
       <div class="placeholder-bar short"></div>
       <div class="placeholder-bar full"></div>
     </div>
-
-    <!-- Placeholder Card 7 -->
-    <div class="card">
-      <div class="placeholder-bar medium"></div>
-      <div class="placeholder-bar short"></div>
-      <div class="placeholder-bar full"></div>
-    </div>
-
-    <!-- Placeholder Card 8 -->
-    <div class="card">
-      <div class="placeholder-bar medium"></div>
-      <div class="placeholder-bar short"></div>
-      <div class="placeholder-bar full"></div>
-    </div>
-
-    <!-- Placeholder Card 9 -->
-    <div class="card">
-      <div class="placeholder-bar medium"></div>
-      <div class="placeholder-bar short"></div>
-      <div class="placeholder-bar full"></div>
-    </div>
-
-    <!-- Placeholder Card 10 -->
-    <div class="card">
-      <div class="placeholder-bar medium"></div>
-      <div class="placeholder-bar short"></div>
-      <div class="placeholder-bar full"></div>
-    </div>
+<div style="height: 48px;" id="footer-spacer"></div>
   </main>
 
-  <footer id="bottom-footer">
+  <footer id="bottom-footer" class="footer-visible pos-fixed path-fast">
     <div class="footer-content">
       FOOTER CONTENT
     </div>
   </footer>
 
   <script>
+      // Elements
     const viewportMeta = document.getElementById('viewport-meta');
     const topHeader = document.getElementById('top-header');
+      const bottomFooter = document.getElementById('bottom-footer');
     const headerSpacer = document.getElementById('header-spacer');
+      const footerSpacer = document.getElementById('footer-spacer');
 
+      // Controls
     const viewportFitSelect = document.getElementById('viewport-fit-select');
     const headerAnchorSelect = document.getElementById('header-anchor-select');
-    const safeAreaPathSelect = document.getElementById('safe-area-path-select');
+      const footerAnchorSelect = document.getElementById('footer-anchor-select');
+      const safeAreaPathSelectTop = document.getElementById('safe-area-path-select-top');
+      const safeAreaPathSelectBottom = document.getElementById('safe-area-path-select-bottom');
 
+      // Status Inspector Outputs
     const metaTagOutput = document.getElementById('meta-tag-output');
-    const pathModeOutput = document.getElementById('path-mode-output');
-    const headerPaddingOutput = document.getElementById('header-padding-output');
-    const codeSnippetOutput = document.getElementById('code-snippet-output');
 
-    let jsLayoutInterval = null;
+  const pathModeOutputTop = document.getElementById('path-mode-output-top');
+  const headerPaddingOutputTop = document.getElementById('header-padding-output-top');
+  const codeSnippetOutputTop = document.getElementById('code-snippet-output-top');
 
-    const codeSnippets = {
+  const pathModeOutputBottom = document.getElementById('path-mode-output-bottom');
+  const footerPaddingOutputBottom = document.getElementById('footer-padding-output-bottom');
+  const codeSnippetOutputBottom = document.getElementById('code-snippet-output-bottom');
+
+      let topJsLayoutInterval = null;
+      let bottomJsLayoutInterval = null;
+
+      const codeSnippetsTop = {
       'fast': `/* Fast Path: Direct Evaluation */\n#top-header {\n  padding-top: env(safe-area-inset-top, 0px);\n}`,
       'slow-css': `/* Slow Path A: Custom CSS Variable + calc() */\n:root {\n  --indirect-safe-top: env(safe-area-inset-top, 0px);\n}\n#top-header {\n  padding-top: calc(var(--indirect-safe-top) + 0px);\n}`,
-      'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateInset() {\n  topHeader.style.paddingTop = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-top)');\n}`
+          'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateTopInset() {\n  topHeader.style.paddingTop = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-top)');\n}`
+        };
+
+        const codeSnippetsBottom = {
+          'fast': `/* Fast Path: Direct Evaluation */\n#bottom-footer {\n  padding-bottom: env(safe-area-inset-bottom, 0px);\n}`,
+          'slow-css': `/* Slow Path A: Custom CSS Variable + calc() */\n:root {\n  --indirect-safe-bottom: env(safe-area-inset-bottom, 0px);\n}\n#bottom-footer {\n  padding-bottom: calc(var(--indirect-safe-bottom) + 0px);\n}`,
+          'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateBottomInset() {\n  bottomFooter.style.paddingBottom = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-bottom)');\n}`
     };
 
     const pathModeDescriptions = {
@@ -383,12 +446,14 @@
     };
 
     function updateState() {
+      // 1. Viewport Fit
       const viewportFitVal = viewportFitSelect.value;
-      const headerAnchorVal = headerAnchorSelect.value;
-      const safeAreaPathVal = safeAreaPathSelect.value;
-
       viewportMeta.setAttribute('content', `width=device-width, initial-scale=1.0, viewport-fit=${viewportFitVal}`);
       metaTagOutput.textContent = `<meta name="viewport" content="${viewportMeta.getAttribute('content')}">`;
+
+      // 2. Top Header State
+      const headerAnchorVal = headerAnchorSelect.value;
+      const safeAreaPathTopVal = safeAreaPathSelectTop.value;
 
       topHeader.className = '';
       if (headerAnchorVal === 'none') {
@@ -401,38 +466,77 @@
         else if (headerAnchorVal === 'sticky') topHeader.classList.add('pos-sticky');
       }
 
-      if (jsLayoutInterval) {
-        clearInterval(jsLayoutInterval);
-        jsLayoutInterval = null;
+      if (topJsLayoutInterval) {
+        clearInterval(topJsLayoutInterval);
+        topJsLayoutInterval = null;
         topHeader.style.paddingTop = '';
       }
 
       topHeader.classList.remove('path-fast', 'path-slow');
-
-      if (safeAreaPathVal === 'fast') {
+      if (safeAreaPathTopVal === 'fast') {
         topHeader.classList.add('path-fast');
-      } else if (safeAreaPathVal === 'slow-css') {
+      } else if (safeAreaPathTopVal === 'slow-css') {
         topHeader.classList.add('path-slow');
-      } else if (safeAreaPathVal === 'slow-js') {
-        const runJSPath = () => {
+      } else if (safeAreaPathTopVal === 'slow-js') {
+        const runTopJSPath = () => {
           topHeader.style.paddingTop = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)') || '0px';
         };
-        runJSPath();
-        jsLayoutInterval = setInterval(runJSPath, 500);
+        runTopJSPath();
+        topJsLayoutInterval = setInterval(runTopJSPath, 500);
       }
 
-      pathModeOutput.textContent = pathModeDescriptions[safeAreaPathVal];
-      codeSnippetOutput.textContent = codeSnippets[safeAreaPathVal];
+      pathModeOutputTop.textContent = pathModeDescriptions[safeAreaPathTopVal];
+      codeSnippetOutputTop.textContent = codeSnippetsTop[safeAreaPathTopVal];
 
-      // Delay reading computed style to allow style recalculation & viewport meta changes to take effect
+      // 3. Bottom Header State
+      const footerAnchorVal = footerAnchorSelect.value;
+      const safeAreaPathBottomVal = safeAreaPathSelectBottom.value;
+
+      bottomFooter.className = '';
+      if (footerAnchorVal === 'none') {
+        bottomFooter.classList.remove('footer-visible');
+        footerSpacer.style.display = 'none';
+      } else {
+        bottomFooter.classList.add('footer-visible');
+        footerSpacer.style.display = 'block';
+        if (footerAnchorVal === 'fixed') bottomFooter.classList.add('pos-fixed');
+        else if (footerAnchorVal === 'sticky') bottomFooter.classList.add('pos-sticky');
+      }
+
+      if (bottomJsLayoutInterval) {
+        clearInterval(bottomJsLayoutInterval);
+        bottomJsLayoutInterval = null;
+        bottomFooter.style.paddingBottom = '';
+      }
+
+      bottomFooter.classList.remove('path-fast', 'path-slow');
+      if (safeAreaPathBottomVal === 'fast') {
+        bottomFooter.classList.add('path-fast');
+      } else if (safeAreaPathBottomVal === 'slow-css') {
+        bottomFooter.classList.add('path-slow');
+      } else if (safeAreaPathBottomVal === 'slow-js') {
+        const runBottomJSPath = () => {
+          bottomFooter.style.paddingBottom = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)') || '0px';
+        };
+        runBottomJSPath();
+        bottomJsLayoutInterval = setInterval(runBottomJSPath, 500);
+      }
+
+      pathModeOutputBottom.textContent = pathModeDescriptions[safeAreaPathBottomVal];
+      codeSnippetOutputBottom.textContent = codeSnippetsBottom[safeAreaPathBottomVal];
+
+      // Measure computed paddings
       setTimeout(() => {
-        headerPaddingOutput.textContent = window.getComputedStyle(topHeader).paddingTop || '0px';
+        headerPaddingOutputTop.textContent = window.getComputedStyle(topHeader).paddingTop || '0px';
+        footerPaddingOutputBottom.textContent = window.getComputedStyle(bottomFooter).paddingBottom || '0px';
       }, 50);
     }
 
     viewportFitSelect.addEventListener('change', updateState);
     headerAnchorSelect.addEventListener('change', updateState);
-    safeAreaPathSelect.addEventListener('change', updateState);
+      footerAnchorSelect.addEventListener('change', updateState);
+      safeAreaPathSelectTop.addEventListener('change', updateState);
+      safeAreaPathSelectBottom.addEventListener('change', updateState);
 
     updateState();
   </script>
