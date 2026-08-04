@@ -6,6 +6,7 @@
   <!-- Dynamic Meta Viewport Tag -->
   <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Edge to Edge Viewport Demo</title>
+  <link rel="manifest" href="manifest.json">
   <style>
     :root {
       --indirect-safe-top: env(safe-area-inset-top, 0px);
@@ -539,6 +540,10 @@
       safeAreaPathSelectBottom.addEventListener('change', updateState);
 
     updateState();
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+    }
   </script>
 </body>
 
