@@ -59,6 +59,7 @@
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.05em;
+      line-height: 1.25;
       color: #db2777;
       text-transform: uppercase;
     }
@@ -113,6 +114,7 @@
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.05em;
+      line-height: 1.25;
       color: #db2777;
       text-transform: uppercase;
     }
@@ -129,14 +131,29 @@
       gap: 20px;
     }
 
-    /* When no top header is present, ensure main container respects top safe area */
+    /* 1. When header is fixed: offset main container by header content (28px) + safe area inset */
+    body:has(#top-header.header-visible.pos-fixed) .main-container {
+      padding-top: calc(24px + 28px + env(safe-area-inset-top, 0px));
+    }
+
+    /* 2. When no top header is present: ensure main container respects top safe area */
     body:not(:has(#top-header.header-visible)) .main-container {
       padding-top: max(24px, env(safe-area-inset-top, 0px));
     }
 
-    /* Same for bottom footer */
+    /* 3. When footer is fixed: offset main container by footer content (44px) + safe area inset */
+    body:has(#bottom-footer.footer-visible.pos-fixed) .main-container {
+      padding-bottom: calc(24px + 44px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* 4. When no bottom footer is present: ensure main container respects bottom safe area */
     body:not(:has(#bottom-footer.footer-visible)) .main-container {
       padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+    }
+
+    #header-spacer,
+    #footer-spacer {
+      display: none !important;
     }
 
     .hero-section {
@@ -259,7 +276,7 @@
   </header>
 
   <main class="main-container" id="main-content">
-    <div style="height: 32px;" id="header-spacer"></div>
+    <div id="header-spacer"></div>
 
     <section class="hero-section">
       <h1 class="hero-title">Edge to edge demo</h1>
@@ -400,7 +417,7 @@
       <div class="placeholder-bar short"></div>
       <div class="placeholder-bar full"></div>
     </div>
-<div style="height: 48px;" id="footer-spacer"></div>
+    <div id="footer-spacer"></div>
   </main>
 
   <footer id="bottom-footer" class="footer-visible pos-fixed path-fast">
@@ -469,14 +486,12 @@
       topHeader.className = '';
       if (headerAnchorVal === 'none') {
         topHeader.classList.remove('header-visible');
-        headerSpacer.style.display = 'none';
       } else if (headerAnchorVal === 'sticky') {
         topHeader.classList.add('header-visible', 'pos-sticky');
-        headerSpacer.style.display = 'none'; // Sticky headers don't need a spacer
       } else if (headerAnchorVal === 'fixed') {
         topHeader.classList.add('header-visible', 'pos-fixed');
-        headerSpacer.style.display = 'block'; // Only fixed headers need spacing compensation
       }
+      headerSpacer.style.display = 'none';
 
       if (topJsLayoutInterval) {
         clearInterval(topJsLayoutInterval);
@@ -507,14 +522,12 @@
       bottomFooter.className = '';
       if (footerAnchorVal === 'none') {
         bottomFooter.classList.remove('footer-visible');
-        footerSpacer.style.display = 'none';
       } else if (footerAnchorVal === 'sticky') {
         bottomFooter.classList.add('footer-visible', 'pos-sticky');
-        footerSpacer.style.display = 'none'; // Sticky footers don't need a spacer
       } else if (footerAnchorVal === 'fixed') {
         bottomFooter.classList.add('footer-visible', 'pos-fixed');
-        footerSpacer.style.display = 'block'; // Only fixed footers need spacing compensation
       }
+      footerSpacer.style.display = 'none';
 
       if (bottomJsLayoutInterval) {
         clearInterval(bottomJsLayoutInterval);
