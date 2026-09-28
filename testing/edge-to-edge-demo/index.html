@@ -73,6 +73,10 @@
       padding-top: calc(var(--indirect-safe-top) + 0px);
     }
 
+    #top-header.path-none {
+      padding-top: 0px;
+    }
+
     /* Highlighted Pink Bottom Footer Box */
     #bottom-footer {
       width: 100%;
@@ -108,6 +112,10 @@
       padding-bottom: calc(var(--indirect-safe-bottom) + 0px);
     }
 
+    #bottom-footer.path-none {
+      padding-bottom: 0px;
+    }
+
     .footer-content {
       padding: 14px 16px;
       text-align: center;
@@ -131,23 +139,33 @@
       gap: 20px;
     }
 
-    /* 1. When header is fixed: offset main container by header content (28px) + safe area inset */
-    body:has(#top-header.header-visible.pos-fixed) .main-container {
+    /* 1a. When header is fixed (with safe area): offset main container by header content (28px) + safe area inset */
+    body:has(#top-header.header-visible.pos-fixed:not(.path-none)) .main-container {
       padding-top: calc(24px + 28px + env(safe-area-inset-top, 0px));
     }
 
-    /* 2. When no top header is present: ensure main container respects top safe area */
-    body:not(:has(#top-header.header-visible)) .main-container {
+    /* 1b. When header is fixed (without safe area): offset main container by header content (28px) only */
+    body:has(#top-header.header-visible.pos-fixed.path-none) .main-container {
+      padding-top: calc(24px + 28px);
+    }
+
+    /* 2. When no top header is present (and safe area is enabled): ensure main container respects top safe area */
+    body:not(:has(#top-header.header-visible)):not(:has(#top-header.path-none)) .main-container {
       padding-top: max(24px, env(safe-area-inset-top, 0px));
     }
 
-    /* 3. When footer is fixed: offset main container by footer content (44px) + safe area inset */
-    body:has(#bottom-footer.footer-visible.pos-fixed) .main-container {
+    /* 3a. When footer is fixed (with safe area): offset main container by footer content (44px) + safe area inset */
+    body:has(#bottom-footer.footer-visible.pos-fixed:not(.path-none)) .main-container {
       padding-bottom: calc(24px + 44px + env(safe-area-inset-bottom, 0px));
     }
 
-    /* 4. When no bottom footer is present: ensure main container respects bottom safe area */
-    body:not(:has(#bottom-footer.footer-visible)) .main-container {
+    /* 3b. When footer is fixed (without safe area): offset main container by footer content (44px) only */
+    body:has(#bottom-footer.footer-visible.pos-fixed.path-none) .main-container {
+      padding-bottom: calc(24px + 44px);
+    }
+
+    /* 4. When no bottom footer is present (and safe area is enabled): ensure main container respects bottom safe area */
+    body:not(:has(#bottom-footer.footer-visible)):not(:has(#bottom-footer.path-none)) .main-container {
       padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
     }
 
@@ -323,6 +341,7 @@
             <option value="fast" selected>Fast path (env)</option>
             <option value="slow-css">Slow path A (CSS var)</option>
             <option value="slow-js">Slow path B (JS layout)</option>
+            <option value="none">None</option>
           </select>
         </div>
       </div>
@@ -359,6 +378,7 @@
             <option value="fast" selected>Fast path (env)</option>
             <option value="slow-css">Slow path A (CSS var)</option>
             <option value="slow-js">Slow path B (JS layout)</option>
+            <option value="none">None</option>
           </select>
         </div>
         </div>
@@ -458,19 +478,22 @@
       const codeSnippetsTop = {
       'fast': `/* Fast Path: Direct Evaluation */\n#top-header {\n  padding-top: env(safe-area-inset-top, 0px);\n}`,
       'slow-css': `/* Slow Path A: Custom CSS Variable + calc() */\n:root {\n  --indirect-safe-top: env(safe-area-inset-top, 0px);\n}\n#top-header {\n  padding-top: calc(var(--indirect-safe-top) + 0px);\n}`,
-          'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateTopInset() {\n  topHeader.style.paddingTop = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-top)');\n}`
+          'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateTopInset() {\n  topHeader.style.paddingTop = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-top)');\n}`,
+          'none': `/* None: No Safe Area Inset */\n#top-header {\n  position: fixed;\n  top: 0;\n  padding-top: 0px;\n}`
         };
 
         const codeSnippetsBottom = {
           'fast': `/* Fast Path: Direct Evaluation */\n#bottom-footer {\n  padding-bottom: env(safe-area-inset-bottom, 0px);\n}`,
           'slow-css': `/* Slow Path A: Custom CSS Variable + calc() */\n:root {\n  --indirect-safe-bottom: env(safe-area-inset-bottom, 0px);\n}\n#bottom-footer {\n  padding-bottom: calc(var(--indirect-safe-bottom) + 0px);\n}`,
-          'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateBottomInset() {\n  bottomFooter.style.paddingBottom = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-bottom)');\n}`
+          'slow-js': `/* Slow Path B: JavaScript Dynamic Sync */\nfunction updateBottomInset() {\n  bottomFooter.style.paddingBottom = getComputedStyle(document.documentElement)\n    .getPropertyValue('env(safe-area-inset-bottom)');\n}`,
+          'none': `/* None: No Safe Area Inset */\n#bottom-footer {\n  position: fixed;\n  bottom: 0;\n  padding-bottom: 0px;\n}`
     };
 
     const pathModeDescriptions = {
       'fast': 'Fast Path (Direct Engine Inset Binding)',
       'slow-css': 'Slow Path A (CSS Custom Property + calc() Cascade)',
-      'slow-js': 'Slow Path B (JS Dynamic Reflow Sync)'
+      'slow-js': 'Slow Path B (JS Dynamic Reflow Sync)',
+      'none': 'None (No Safe Area Inset Applied)'
     };
 
     function updateState() {
@@ -499,7 +522,7 @@
         topHeader.style.paddingTop = '';
       }
 
-      topHeader.classList.remove('path-fast', 'path-slow');
+      topHeader.classList.remove('path-fast', 'path-slow', 'path-none');
       if (safeAreaPathTopVal === 'fast') {
         topHeader.classList.add('path-fast');
       } else if (safeAreaPathTopVal === 'slow-css') {
@@ -510,6 +533,8 @@
         };
         runTopJSPath();
         topJsLayoutInterval = setInterval(runTopJSPath, 500);
+      } else if (safeAreaPathTopVal === 'none') {
+        topHeader.classList.add('path-none');
       }
 
       pathModeOutputTop.textContent = pathModeDescriptions[safeAreaPathTopVal];
@@ -535,7 +560,7 @@
         bottomFooter.style.paddingBottom = '';
       }
 
-      bottomFooter.classList.remove('path-fast', 'path-slow');
+      bottomFooter.classList.remove('path-fast', 'path-slow', 'path-none');
       if (safeAreaPathBottomVal === 'fast') {
         bottomFooter.classList.add('path-fast');
       } else if (safeAreaPathBottomVal === 'slow-css') {
@@ -546,6 +571,8 @@
         };
         runBottomJSPath();
         bottomJsLayoutInterval = setInterval(runBottomJSPath, 500);
+      } else if (safeAreaPathBottomVal === 'none') {
+        bottomFooter.classList.add('path-none');
       }
 
       pathModeOutputBottom.textContent = pathModeDescriptions[safeAreaPathBottomVal];
