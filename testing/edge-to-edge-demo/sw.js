@@ -1,4 +1,4 @@
-const CACHE_NAME = 'edge-demo-v1';
+const CACHE_NAME = 'edge-demo-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
